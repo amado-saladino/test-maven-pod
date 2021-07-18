@@ -27,3 +27,7 @@ Open the browser and navigate to `http://<Host-IP>:<Service-node-port>`
 This is a workaround for accessing the pod
 
 `kubectl port-forward --address 0.0.0.0 maven-test-runner 8000:80`
+
+## Video
+
+Check the [video demo](https://www.youtube.com/watch?v=kl2YCDDJCYY) to see this in action
