@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: maven-test-runner
+  labels:
+    app: maven
+    type: selenium
+spec:
+  restartPolicy: Never
+  volumes:
+  - name: code
+    emptyDir: {}
+  - name: maven-repo
+    hostPath:
+      path: /root/.m2
+  - name: report
+    emptyDir: {}
+  containers:
+  - name: maven-test
+    image: amadosaladino/se:2.0
+    imagePullPolicy: IfNotPresent
+    workingDir: /app/maven-pipeline
+    args: ["test"]
+    volumeMounts:
+    - name: code
+      mountPath: /app
+    - name: maven-repo
+      mountPath: /root/.m2
+    - name: report
+      mountPath: /app/maven-pipeline/target/surefire-reports
+  - name: test-report
+    image: nginx:1.14
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - name: report
+      mountPath: /usr/share/nginx/html
+    ports:
+    - containerPort: 80
+  initContainers:
+  - name: scm
+    image: alpine/git
+    imagePullPolicy: IfNotPresent
+    args: ['clone', 'https://github.com/amado-saladino/maven-pipeline.git']
+    volumeMounts:
+    - name: code
+      mountPath: /git
+  
